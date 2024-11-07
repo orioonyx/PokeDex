@@ -37,7 +37,6 @@ android {
 
 dependencies {
     // modules
-    implementation(project(Modules.core))
     implementation(project(Modules.domain))
 
     implementation(libs.androidx.core.ktx)

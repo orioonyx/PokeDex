@@ -5,13 +5,14 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 
 @Entity
+@JsonClass(generateAdapter = true)
 data class PokemonDetailEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val height: Int,
     val weight: Int,
     val experience: Int,
-    val types: String,
+    val types: List<PokemonTypeEntity>,
     val hp: Int,
     val attack: Int,
     val defense: Int,
@@ -19,13 +20,15 @@ data class PokemonDetailEntity(
     val exp: Int
 ) {
     @JsonClass(generateAdapter = true)
-    data class TypeResponse(
+    data class PokemonTypeEntity(
         val slot: Int,
-        val type: Type
+        val type: TypeInfo
     )
 
     @JsonClass(generateAdapter = true)
-    data class Type(
+    data class TypeInfo(
         val name: String
     )
 }
+
+

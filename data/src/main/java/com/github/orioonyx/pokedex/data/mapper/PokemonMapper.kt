@@ -2,11 +2,12 @@ package com.github.orioonyx.pokedex.data.mapper
 
 import com.github.orioonyx.pokedex.data.local.entity.PokemonDetailEntity
 import com.github.orioonyx.pokedex.data.local.entity.PokemonEntity
-import com.github.orioonyx.pokedex.data.remote.model.PokemonDetailDto
-import com.github.orioonyx.pokedex.data.remote.model.PokemonDto
+import com.github.orioonyx.pokedex.data.remote.model.dto.PokemonDetailDto
+import com.github.orioonyx.pokedex.data.remote.model.dto.PokemonDto
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import com.github.orioonyx.pokedex.domain.model.PokemonDetail
-import com.github.orioonyx.pokedex.domain.model.PokemonDetail.TypeResponse
+import com.github.orioonyx.pokedex.data.local.entity.PokemonDetailEntity.PokemonTypeEntity as EntityPokemonTypeEntity
+import com.github.orioonyx.pokedex.domain.model.PokemonDetail.PokemonType as DomainPokemonType
 
 object PokemonMapper {
 
@@ -45,12 +46,7 @@ object PokemonMapper {
             height = dto.height,
             weight = dto.weight,
             experience = dto.experience,
-            types = dto.types.map {
-                TypeResponse(
-                    slot = it.slot,
-                    type = PokemonDetail.Type(name = it.type.name)
-                )
-            }
+            types = dto.types.map { it.toDomainPokemonType() }
         )
     }
 
@@ -62,9 +58,7 @@ object PokemonMapper {
             height = entity.height,
             weight = entity.weight,
             experience = entity.experience,
-            types = entity.types.split(",").map {
-                TypeResponse(0, PokemonDetail.Type(it))
-            },
+            types = entity.types.map { it.toDomainPokemonType() },
             hp = entity.hp,
             attack = entity.attack,
             defense = entity.defense,
@@ -81,7 +75,7 @@ object PokemonMapper {
             height = detail.height,
             weight = detail.weight,
             experience = detail.experience,
-            types = detail.types.joinToString(",") { it.type.name },
+            types = detail.types.map { it.toEntityPokemonType() },
             hp = detail.hp,
             attack = detail.attack,
             defense = detail.defense,
@@ -89,4 +83,22 @@ object PokemonMapper {
             exp = detail.exp
         )
     }
+
+    // Extension function to convert DTO Type to Domain PokemonType
+    private fun PokemonDetailDto.TypeResponse.toDomainPokemonType() = DomainPokemonType(
+        slot = this.slot,
+        type = PokemonDetail.TypeInfo(name = this.type.name)
+    )
+
+    // Extension function to convert Entity PokemonTypeEntity to Domain PokemonType
+    private fun EntityPokemonTypeEntity.toDomainPokemonType() = DomainPokemonType(
+        slot = this.slot,
+        type = PokemonDetail.TypeInfo(name = this.type.name)
+    )
+
+    // Extension function to convert Domain PokemonType to Entity PokemonTypeEntity
+    private fun DomainPokemonType.toEntityPokemonType() = EntityPokemonTypeEntity(
+        slot = this.slot,
+        type = PokemonDetailEntity.TypeInfo(name = this.type.name)
+    )
 }

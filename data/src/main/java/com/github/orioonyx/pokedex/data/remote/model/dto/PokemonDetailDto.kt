@@ -1,4 +1,4 @@
-package com.github.orioonyx.pokedex.data.remote.model
+package com.github.orioonyx.pokedex.data.remote.model.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -24,3 +24,4 @@ data class PokemonDetailDto(
         @field:Json(name = "name") val name: String,
     )
 }
+

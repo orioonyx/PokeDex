@@ -1,8 +1,8 @@
-package com.github.orioonyx.pokedex.data.remote.service
+package com.github.orioonyx.pokedex.data.remote.api
 
-import com.github.orioonyx.pokedex.core.network.PokemonConstants.PAGING_SIZE
-import com.github.orioonyx.pokedex.data.remote.model.PokemonDetailDto
-import com.github.orioonyx.pokedex.data.remote.model.PokemonResponse
+import com.github.orioonyx.pokedex.data.remote.model.dto.PokemonDetailDto
+import com.github.orioonyx.pokedex.data.remote.model.response.PokemonResponse
+import com.github.orioonyx.pokedex.data.remote.utils.PokemonConstants.PAGING_SIZE
 import com.skydoves.sandwich.ApiResponse
 import javax.inject.Inject
 

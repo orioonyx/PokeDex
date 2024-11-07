@@ -1,5 +1,6 @@
-package com.github.orioonyx.pokedex.data.remote.model
+package com.github.orioonyx.pokedex.data.remote.model.response
 
+import com.github.orioonyx.pokedex.data.remote.model.dto.PokemonDto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
