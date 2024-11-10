@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -72,7 +73,6 @@
 
                     <TextView
                         android:id="@+id/pokemonName"
-                        style="@style/TextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -102,7 +102,6 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/weight"
-                        style="@style/TextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/detail_margin"
@@ -121,7 +120,6 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/height"
-                        style="@style/TextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:shadowColor="@color/transparent_20"
@@ -194,7 +192,6 @@
 
                 <TextView
                     android:id="@+id/infoTitle"
-                    style="@style/TextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -207,7 +204,6 @@
 
                 <TextView
                     android:id="@+id/image"
-                    style="@style/TextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_margin"
@@ -220,7 +216,6 @@
 
                 <TextView
                     android:id="@+id/imageText"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:gravity="start"
@@ -242,7 +237,6 @@
 
                 <TextView
                     android:id="@+id/shinyImageText"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:gravity="start"
@@ -265,7 +259,6 @@
 
                 <TextView
                     android:id="@+id/stats"
-                    style="@style/TextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_margin"
@@ -278,7 +271,6 @@
 
                 <TextView
                     android:id="@+id/hp"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
@@ -303,7 +295,6 @@
 
                 <TextView
                     android:id="@+id/attack"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
@@ -328,7 +319,6 @@
 
                 <TextView
                     android:id="@+id/defense"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
@@ -353,7 +343,6 @@
 
                 <TextView
                     android:id="@+id/speed"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
@@ -378,7 +367,6 @@
 
                 <TextView
                     android:id="@+id/exp"
-                    style="@style/TextStyle"
                     android:layout_width="@dimen/detail_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
@@ -416,7 +404,7 @@
         <include
             android:id="@+id/emptyView"
             layout="@layout/empty_view"
-            android:visibility="@{vm.isFetchFailed ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{vm.isFetchFailed ? View.VISIBLE : View.GONE}" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

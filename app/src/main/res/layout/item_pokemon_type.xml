@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="type"
             type="com.github.orioonyx.pokedex.domain.model.PokemonDetail.TypeInfo" />
-
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -20,7 +18,6 @@
         app:typeBackground="@{type.name}">
 
         <TextView
-            style="@style/TextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
