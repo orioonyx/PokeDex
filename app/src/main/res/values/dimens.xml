@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="detail_title_width">150dp</dimen>
+    <dimen name="detail_progress_margin_top">8dp</dimen>
+    <dimen name="detail_progress_margin_start">16dp</dimen>
+    <dimen name="detail_progress_height">16dp</dimen>
+    <dimen name="detail_margin">32dp</dimen>
+</resources>

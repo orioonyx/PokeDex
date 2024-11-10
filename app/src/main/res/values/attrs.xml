@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="AnimatedCharacterImageView">
+        <attr name="translationYRange" format="float" />
+    </declare-styleable>
+</resources>
