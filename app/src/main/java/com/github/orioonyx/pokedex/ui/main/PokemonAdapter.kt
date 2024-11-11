@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.main
 
 import android.view.LayoutInflater
@@ -10,16 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.orioonyx.pokedex.R
 import com.github.orioonyx.pokedex.databinding.ItemPokemonBinding
 import com.github.orioonyx.pokedex.domain.model.Pokemon
-
-class PokemonDiffCallback : DiffUtil.ItemCallback<Pokemon>() {
-    override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
-        return oldItem.name == newItem.name
-    }
-
-    override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
-        return oldItem == newItem
-    }
-}
 
 class PokemonAdapter(private val clickHandler: (Pokemon) -> Unit) :
     ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(PokemonDiffCallback()) {
@@ -38,8 +35,9 @@ class PokemonAdapter(private val clickHandler: (Pokemon) -> Unit) :
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.item_animation_slide_in)
-            viewToAnimate.startAnimation(animation)
+            viewToAnimate.startAnimation(
+                AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.item_animation_slide_in)
+            )
             lastPosition = position
         }
     }
@@ -65,4 +63,12 @@ class PokemonAdapter(private val clickHandler: (Pokemon) -> Unit) :
             binding.executePendingBindings()
         }
     }
+}
+
+class PokemonDiffCallback : DiffUtil.ItemCallback<Pokemon>() {
+    override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean =
+        oldItem.name == newItem.name
+
+    override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean =
+        oldItem == newItem
 }

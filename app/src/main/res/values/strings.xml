@@ -17,4 +17,6 @@
     <string name="special_attack">Special Attack</string>
     <string name="special_defense">Special Defense</string>
     <string name="empty">No items to display</string>
+    <string name="data_missing_message">Pokemon data is missing.</string>
+
 </resources>

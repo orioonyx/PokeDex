@@ -58,7 +58,7 @@
                         app:onBackPressed="@{true}"
                         app:srcCompat="@drawable/ic_arrow_back" />
 
-                    <com.github.orioonyx.pokedex.utils.ui.AnimatedCharacterImageView
+                    <com.github.orioonyx.pokedex.utils.view.AnimatedCharacterImageView
                         android:id="@+id/pokemonImage"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
@@ -396,10 +396,11 @@
             android:id="@+id/progressbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:gone="@{!vm.isLoading}"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:indeterminate="true"
-            app:gone="@{!vm.isLoading}" />
+            android:indeterminateTint="@color/gray_10" />
 
         <include
             android:id="@+id/emptyView"

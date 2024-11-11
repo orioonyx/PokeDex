@@ -20,6 +20,7 @@ import com.github.orioonyx.core_test.MockUtil
 import com.github.orioonyx.pokedex.domain.repository.PokemonDetailRepository
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonDetailUseCase
 import com.github.orioonyx.pokedex.ui.detail.DetailActivity
+import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_DETAILS
 import com.github.orioonyx.pokedex.utils.EspressoIdlingResource
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -67,6 +68,7 @@ class DetailActivityPokemonDetailFailureStateTest {
         val intent = Intent(ApplicationProvider.getApplicationContext(), DetailActivity::class.java).apply {
             putExtra(DetailActivity.EXTRA_POKEMON, MockUtil.mockPokemon())
         }
+        val errorMessage = ERROR_LOADING_POKEMON_DETAILS
 
         ActivityScenario.launch<DetailActivity>(intent).use { scenario ->
             scenario.moveToState(Lifecycle.State.STARTED)
@@ -78,7 +80,7 @@ class DetailActivityPokemonDetailFailureStateTest {
                 assertThat(activity.viewModel.isLoading.value).isFalse()
                 assertThat(activity.viewModel.isFetchFailed.value).isTrue()
                 assertThat(activity.binding.emptyView.isVisible).isTrue()
-                assertThat(activity.viewModel.toastMessage.value?.peekContent()).isEqualTo("Failed to load details")
+                assertThat(activity.viewModel.toastMessage.value?.peekContent()).isEqualTo(errorMessage)
             }
         }
     }
@@ -88,6 +90,7 @@ class DetailActivityPokemonDetailFailureStateTest {
         val intent = Intent(ApplicationProvider.getApplicationContext(), DetailActivity::class.java).apply {
             putExtra(DetailActivity.EXTRA_POKEMON, MockUtil.mockPokemon())
         }
+        val errorMessage = ERROR_LOADING_POKEMON_DETAILS
 
         // Return empty data to simulate empty state
         coEvery { pokemonDetailRepository.fetchPokemonDetail(any()) } returns flowOf(MockUtil.emptyPokemonDetail())
@@ -102,7 +105,7 @@ class DetailActivityPokemonDetailFailureStateTest {
                 assertThat(activity.viewModel.isLoading.value).isFalse()
                 assertThat(activity.viewModel.isFetchFailed.value).isTrue()
                 assertThat(activity.binding.emptyView.isVisible).isTrue()
-                assertThat(activity.viewModel.toastMessage.value?.peekContent()).isEqualTo("Failed to load details")
+                assertThat(activity.viewModel.toastMessage.value?.peekContent()).isEqualTo(errorMessage)
             }
         }
     }

@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.detail
 
 import androidx.lifecycle.LiveData
@@ -6,11 +13,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.orioonyx.pokedex.domain.model.PokemonDetail
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonDetailUseCase
+import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_DETAILS
 import com.github.orioonyx.pokedex.utils.EspressoIdlingResource
 import com.github.orioonyx.pokedex.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -40,14 +47,15 @@ class DetailViewModel @Inject constructor(
     fun fetchPokemonDetail(name: String) {
         viewModelScope.launch {
             EspressoIdlingResource.increment()
-
-            fetchPokemonDetailUseCase(name)
-                .onStart { onFetchStart() }
-                .catch { onFetchError(it) }
-                .collect { detail -> onFetchSuccess(detail) }
-
-            onFetchComplete()
-            EspressoIdlingResource.decrement()
+            try {
+                fetchPokemonDetailUseCase(name)
+                    .onStart { onFetchStart() }
+                    .catch { onFetchError(it) }
+                    .collect { detail -> onFetchSuccess(detail) }
+            } finally {
+                onFetchComplete()
+                EspressoIdlingResource.decrement()
+            }
         }
     }
 
@@ -57,8 +65,8 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun onFetchError(exception: Throwable) {
-        Timber.e(exception, "Error fetching Pokemon detail")
-        _toastMessage.value = Event("Failed to load details")
+        Timber.e(exception, ERROR_LOADING_POKEMON_DETAILS)
+        _toastMessage.value = Event(ERROR_LOADING_POKEMON_DETAILS)
         _isFetchFailed.value = true
     }
 
@@ -68,9 +76,13 @@ class DetailViewModel @Inject constructor(
 
     private fun onFetchComplete() {
         _isLoading.value = false
-        if (_pokemonDetail.value == null || _pokemonDetail.value?.name.isNullOrEmpty()) {
+        if (_pokemonDetail.value?.name.isNullOrEmpty()) {
             _isFetchFailed.value = true
-            _toastMessage.value = Event("Failed to load details")
+            _toastMessage.value = Event(ERROR_LOADING_POKEMON_DETAILS)
         }
+    }
+
+    fun setToastMessage(message: String) {
+        _toastMessage.value = Event(message)
     }
 }

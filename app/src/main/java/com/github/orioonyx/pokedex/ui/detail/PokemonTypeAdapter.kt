@@ -1,5 +1,13 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.detail
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,15 +29,14 @@ class PokemonTypeAdapter : RecyclerView.Adapter<PokemonTypeAdapter.TypeViewHolde
 
     override fun getItemCount(): Int = typeList.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItems(types: List<PokemonDetail.TypeInfo>) {
         typeList.clear()
         typeList.addAll(types)
         notifyDataSetChanged()
     }
 
-    inner class TypeViewHolder(private val binding: ItemPokemonTypeBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
+    inner class TypeViewHolder(private val binding: ItemPokemonTypeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(type: PokemonDetail.TypeInfo) {
             binding.type = type
             binding.executePendingBindings()

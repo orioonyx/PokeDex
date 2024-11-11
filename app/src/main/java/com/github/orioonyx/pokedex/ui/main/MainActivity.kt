@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.main
 
 import android.content.Intent
@@ -10,7 +17,6 @@ import com.github.orioonyx.pokedex.domain.model.Pokemon
 import com.github.orioonyx.pokedex.ui.detail.DetailActivity
 import com.github.orioonyx.pokedex.ui.detail.DetailActivity.Companion.EXTRA_POKEMON
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -29,17 +35,20 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
+        setupPokemonListObserver()
+        setupAdapter()
         viewModel.fetchNextPokemonList()
+    }
 
-        val adapter = PokemonAdapter { pokemon ->
-            onPokemonClick(pokemon)
-        }
-        binding.adapter = adapter
-
+    private fun setupPokemonListObserver() {
         viewModel.pokemonList.observe(this) { pokemonList ->
-            Timber.d("Pokemon list updated: ${pokemonList.size}")
-            adapter.submitList(pokemonList)
+            (binding.adapter as? PokemonAdapter)?.submitList(pokemonList)
         }
+    }
+
+    private fun setupAdapter() {
+        val adapter = PokemonAdapter { pokemon -> onPokemonClick(pokemon) }
+        binding.adapter = adapter
     }
 
     private fun onPokemonClick(pokemon: Pokemon) {

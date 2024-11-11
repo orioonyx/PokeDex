@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.utils
 
 import com.github.orioonyx.pokedex.R
@@ -25,6 +32,6 @@ object PokemonTypeUtils {
     )
 
     fun getTypeColor(type: String): Int {
-        return typeColorMap[type] ?: R.color.gray_21
+        return typeColorMap[type] ?: R.color.dark
     }
 }

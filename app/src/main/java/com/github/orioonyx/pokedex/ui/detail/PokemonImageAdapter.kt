@@ -1,5 +1,13 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.detail
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +28,12 @@ class PokemonImageAdapter : RecyclerView.Adapter<PokemonImageAdapter.PokemonGifV
 
     override fun getItemCount(): Int = urlList.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItems(urls: List<String>) {
-        urlList.clear()
-        urlList.addAll(urls)
+        urlList.apply {
+            clear()
+            addAll(urls)
+        }
         notifyDataSetChanged()
     }
 

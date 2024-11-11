@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.detail
 
 import android.os.Build
@@ -7,6 +14,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.github.orioonyx.pokedex.R
 import com.github.orioonyx.pokedex.databinding.ActivityDetailBinding
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,14 +29,9 @@ class DetailActivity : AppCompatActivity() {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val viewModel: DetailViewModel by viewModels()
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val pokemonTypeAdapter by lazy { PokemonTypeAdapter() }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val pokemonImageAdapter by lazy { PokemonImageAdapter() }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val pokemonShinyImageAdapter by lazy { PokemonImageAdapter() }
+    private val pokemonTypeAdapter by lazy { PokemonTypeAdapter() }
+    private val pokemonImageAdapter by lazy { PokemonImageAdapter() }
+    private val pokemonShinyImageAdapter by lazy { PokemonImageAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +44,11 @@ class DetailActivity : AppCompatActivity() {
         setupRecyclerViews()
         observeViewModel()
 
-        val pokemon = getPokemonFromIntent()
-        pokemon?.let {
+        getPokemonFromIntent()?.let {
             binding.pokemon = it
             viewModel.fetchPokemonDetail(it.name)
-            setupPokemonImages(it)
-        }
+            updatePokemonImages(it)
+        } ?: viewModel.setToastMessage(getString(R.string.data_missing_message))
     }
 
     private fun getPokemonFromIntent(): Pokemon? {
@@ -57,45 +60,27 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViews() {
-        setupImageRecyclerView()
-        setupShinyImageRecyclerView()
-        setupTypeRecyclerView()
+        setupRecyclerView(binding.imageRecyclerView, pokemonImageAdapter, GridLayoutManager(this, 2))
+        setupRecyclerView(binding.shinyImageRecyclerView, pokemonShinyImageAdapter, GridLayoutManager(this, 2))
+        setupRecyclerView(binding.typeRecyclerView, pokemonTypeAdapter, LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
     }
 
-    private fun setupImageRecyclerView() {
-        binding.imageRecyclerView.apply {
-            adapter = pokemonImageAdapter
-            layoutManager = GridLayoutManager(this@DetailActivity, 2)
+    private fun setupRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>, layoutManager: RecyclerView.LayoutManager) {
+        recyclerView.apply {
+            this.adapter = adapter
+            this.layoutManager = layoutManager
         }
     }
 
-    private fun setupShinyImageRecyclerView() {
-        binding.shinyImageRecyclerView.apply {
-            adapter = pokemonShinyImageAdapter
-            layoutManager = GridLayoutManager(this@DetailActivity, 2)
-        }
-    }
-
-    private fun setupTypeRecyclerView() {
-        binding.typeRecyclerView.apply {
-            adapter = pokemonTypeAdapter
-            layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
-        }
-    }
-
-    private fun setupPokemonImages(pokemon: Pokemon) {
-        pokemonImageAdapter.setItems(
-            listOf(pokemon.getGifUrl(), pokemon.getBackGifUrl())
-        )
-        pokemonShinyImageAdapter.setItems(
-            listOf(pokemon.getShinyGifUrl(), pokemon.getShinyBackGifUrl())
-        )
+    private fun updatePokemonImages(pokemon: Pokemon) {
+        pokemonImageAdapter.setItems(listOf(pokemon.getGifUrl(), pokemon.getBackGifUrl()))
+        pokemonShinyImageAdapter.setItems(listOf(pokemon.getShinyGifUrl(), pokemon.getShinyBackGifUrl()))
     }
 
     private fun observeViewModel() {
         viewModel.pokemonDetail.observe(this) { pokemonDetail ->
             binding.pokemonDetail = pokemonDetail
-            pokemonDetail?.types?.let { pokemonTypeAdapter.setItems(it.map { it -> it.type }) }
+            pokemonDetail?.types?.map { it.type }?.let(pokemonTypeAdapter::setItems)
         }
     }
 

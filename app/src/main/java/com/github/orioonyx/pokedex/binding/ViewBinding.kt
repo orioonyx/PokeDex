@@ -1,7 +1,15 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.binding
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
@@ -132,10 +140,13 @@ object ViewBindingAdapters {
     @BindingAdapter("typeBackground")
     fun bindTypeBackground(cardView: MaterialCardView, typeName: String?) {
         val context = cardView.context
-        val colorResId = typeName?.let { PokemonTypeUtils.getTypeColor(it.lowercase()) }
-            ?: R.color.gray_21
-        val color = ContextCompat.getColor(context, colorResId)
-        cardView.setCardBackgroundColor(color)
+        val currentColor = (cardView.background as? ColorDrawable)?.color
+        val colorResId = typeName?.let { PokemonTypeUtils.getTypeColor(it.lowercase()) } ?: R.color.dark
+        val newColor = ContextCompat.getColor(context, colorResId)
+
+        if (currentColor != newColor) {
+            cardView.setCardBackgroundColor(newColor)
+        }
     }
 
     @JvmStatic

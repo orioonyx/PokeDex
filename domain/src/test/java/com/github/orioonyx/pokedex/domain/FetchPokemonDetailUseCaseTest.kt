@@ -16,15 +16,15 @@ import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonDetailUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import timber.log.Timber
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.catch
-import org.junit.Assert.assertTrue
 
 
 class FetchPokemonDetailUseCaseTest {

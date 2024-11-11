@@ -1,3 +1,10 @@
+/*
+ * Licensed under the Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Author: KyungEun Noh
+ */
+
 package com.github.orioonyx.pokedex.ui.main
 
 import androidx.lifecycle.LiveData
@@ -6,11 +13,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonListUseCase
+import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_LIST
 import com.github.orioonyx.pokedex.utils.EspressoIdlingResource
 import com.github.orioonyx.pokedex.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,56 +40,50 @@ class MainViewModel @Inject constructor(
     private val _isFetchFailed = MutableLiveData(false)
     val isFetchFailed: LiveData<Boolean> get() = _isFetchFailed
 
-    private var pokemonFetchingIndex = 0
+    private var currentPageIndex = 0
 
     init {
         Timber.d("MainViewModel initialized")
     }
 
     fun fetchNextPokemonList() {
-        Timber.d("fetchNextPokemonList index: $pokemonFetchingIndex loading: ${_isLoading.value}")
-        if (_isLoading.value != true) {
-            pokemonFetchingIndex++
-            fetchPokemonList(pokemonFetchingIndex)
-        }
+        if (_isLoading.value == true) return
+        currentPageIndex++
+        fetchPokemonList(currentPageIndex)
     }
 
     private fun fetchPokemonList(page: Int) {
         viewModelScope.launch {
             EspressoIdlingResource.increment()
-
             fetchPokemonListUseCase(page)
-                .onStart { onFetchStart() }
-                .catch { onFetchError(it) }
-                .collect { list -> onFetchSuccess(list) }
-
-            onFetchComplete()
+                .onStart { handleLoadingStart() }
+                .catch { handleError(it) }
+                .collect { handleSuccess(it) }
+            handleLoadingComplete()
             EspressoIdlingResource.decrement()
         }
     }
 
-    private fun onFetchStart() {
+    private fun handleLoadingStart() {
         _isLoading.value = true
         _isFetchFailed.value = false
     }
 
-    private fun onFetchError(exception: Throwable) {
-        Timber.e(exception, "Error fetching Pokemon list")
-        _toastMessage.value = Event("Failed to load Pokémon list")
+    private fun handleError(exception: Throwable) {
+        Timber.e(exception, ERROR_LOADING_POKEMON_LIST)
+        _toastMessage.value = Event(ERROR_LOADING_POKEMON_LIST)
         _isFetchFailed.value = true
     }
 
-    private fun onFetchSuccess(list: List<Pokemon>) {
-        Timber.d("Fetched ${list.size} Pokémon items ${list.map { it.name }}")
+    private fun handleSuccess(list: List<Pokemon>) {
         _pokemonList.value = _pokemonList.value.orEmpty().plus(list)
-        Timber.d("Total Pokémon items: ${_pokemonList.value?.size}")
     }
 
-    private fun onFetchComplete() {
+    private fun handleLoadingComplete() {
         _isLoading.value = false
         if (_pokemonList.value.isNullOrEmpty()) {
             _isFetchFailed.value = true
-            _toastMessage.value = Event("Failed to load Pokémon list")
+            _toastMessage.value = Event(ERROR_LOADING_POKEMON_LIST)
         }
     }
 }

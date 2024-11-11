@@ -15,6 +15,7 @@ import com.github.orioonyx.core_test.MockUtil
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonListUseCase
 import com.github.orioonyx.pokedex.ui.main.MainViewModel
+import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_LIST
 import com.github.orioonyx.pokedex.utils.Event
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -79,7 +80,7 @@ class MainViewModelTest {
     @Test
     fun `fetchNextPokemonList should show toast on error`() = runTest(testDispatcher) {
         // Given
-        val errorMessage = "Failed to load Pokémon list"
+        val errorMessage = ERROR_LOADING_POKEMON_LIST
         coEvery { fetchPokemonListUseCase.invoke(any()) } returns flow { throw Exception(errorMessage) }
 
         val toastObserver: Observer<Event<String>> = mockk(relaxed = true)
