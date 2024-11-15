@@ -1,10 +1,10 @@
-# Pokedex 🐾
+# PokeDex 🐾
 
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Android-blue)
 
 A modern Pokemon Encyclopedia application built with Kotlin, implementing **Clean Architecture** and the **MVVM Design Pattern**.  
-Pokedex leverages the power of **Jetpack components**, **Room**, and **Flow** for a seamless and modularized experience.
+PokeDex leverages the power of **Jetpack components**, **Room**, and **Flow** for a seamless and modularized experience.
 
 ![](https://github.com/user-attachments/assets/7bccaaa7-4d37-42ae-9ae1-7697366af454)
 
@@ -62,7 +62,7 @@ Pokedex leverages the power of **Jetpack components**, **Room**, and **Flow** fo
 
 ## Open API 🌍
 <img src="https://user-images.githubusercontent.com/24237865/83422649-d1b1d980-a464-11ea-8c91-a24fdf89cd6b.png" align="right" width="100px"/>
-Pokedex uses [PokeAPI](https://pokeapi.co/) for fetching data related to Pokémon.
+PokeDex uses [PokeAPI](https://pokeapi.co/) for fetching data related to Pokémon.
 
 
 ## License 📜
