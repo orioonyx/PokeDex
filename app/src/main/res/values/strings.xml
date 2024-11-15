@@ -6,8 +6,8 @@
     <string name="weight">Weight</string>
     <string name="information">Information</string>
     <string name="image">Image</string>
-    <string name="detail_image">Front / Back Image</string>
-    <string name="detail_shiny_image">Shiny Front / Back Image</string>
+    <string name="detail_image">Default\nFront / Back</string>
+    <string name="detail_shiny_image">Shiny\nFront / Back</string>
     <string name="stats">Stats</string>
     <string name="hp">Hp</string>
     <string name="attack">Attack</string>

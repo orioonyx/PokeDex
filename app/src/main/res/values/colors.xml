@@ -39,12 +39,15 @@
     <color name="transparent_20">#33000000</color>
     <color name="transparent_60">#99000000</color>
     <color name="transparent_80">#CC000000</color>
-    <color name="progress">#FFDE21</color>
+
     <color name="progress_background">#F2F0F0</color>
+    <color name="hp_progress">#E57373</color>
+    <color name="attack_progress">#FFB74D</color>
+    <color name="defense_progress">#81A4CD</color>
+    <color name="speed_progress">#66BB6A</color>
+    <color name="experience_progress">#FFD54F</color>
+
     <color name="background">#FDFDFD</color>
-    <color name="backgroundDark">#121212</color>
     <color name="colorPrimary">#121212</color>
-    <color name="colorPrimaryDark">#FDFDFD</color>
     <color name="colorAccent">#121212</color>
-    <color name="colorAccentDark">#FDFDFD</color>
 </resources>

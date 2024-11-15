@@ -75,8 +75,7 @@
                         android:id="@+id/pokemonName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="12dp"
+                        android:padding="8dp"
                         android:shadowColor="@color/transparent_60"
                         android:shadowDx="4"
                         android:shadowDy="4"
@@ -87,23 +86,27 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/pokemonImage" />
+                        app:layout_constraintTop_toBottomOf="@id/pokemonImage"
+                        app:fadeIn="@{true}"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/typeRecyclerView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minHeight="28dp"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/pokemonName"
-                        tools:listitem="@layout/item_pokemon_type" />
+                        tools:listitem="@layout/item_pokemon_type"
+                        app:fadeIn="@{true}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/weight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minHeight="20dp"
                         android:layout_marginTop="@dimen/detail_margin"
                         android:shadowColor="@color/transparent_20"
                         android:shadowDx="4"
@@ -116,12 +119,14 @@
                         app:layout_constraintEnd_toStartOf="@id/height"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/typeRecyclerView"
-                        tools:text="24.0 KG" />
+                        tools:text="24.0 KG"
+                        app:fadeIn="@{true}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/height"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minHeight="20dp"
                         android:shadowColor="@color/transparent_20"
                         android:shadowDx="4"
                         android:shadowDy="4"
@@ -133,7 +138,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/weight"
                         app:layout_constraintTop_toTopOf="@id/weight"
-                        tools:text="11 M" />
+                        tools:text="11 M"
+                        app:fadeIn="@{true}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/weight_title"
@@ -145,7 +151,8 @@
                         app:layout_constraintEnd_toEndOf="@id/weight"
                         app:layout_constraintStart_toStartOf="@id/weight"
                         app:layout_constraintTop_toBottomOf="@id/weight"
-                        tools:text="Weight" />
+                        tools:text="Weight"
+                        app:fadeIn="@{true}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/height_title"
@@ -157,7 +164,8 @@
                         app:layout_constraintEnd_toEndOf="@id/height"
                         app:layout_constraintStart_toStartOf="@id/height"
                         app:layout_constraintTop_toBottomOf="@id/height"
-                        tools:text="Height" />
+                        tools:text="Height"
+                        app:fadeIn="@{true}" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,6 +186,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_background"
                 android:padding="16dp"
+                android:textSize="24sp"
                 app:toast="@{vm.toastMessage}">
 
                 <View
@@ -196,11 +205,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/information"
-                    android:textSize="32sp"
+                    android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_percent="0.3"
+                    android:orientation="vertical"/>
 
                 <TextView
                     android:id="@+id/image"
@@ -216,10 +232,11 @@
 
                 <TextView
                     android:id="@+id/imageText"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:text="@string/detail_image"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintBottom_toBottomOf="@+id/imageRecyclerView"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/imageRecyclerView" />
@@ -237,10 +254,11 @@
 
                 <TextView
                     android:id="@+id/shinyImageText"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:text="@string/detail_shiny_image"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintBottom_toBottomOf="@+id/shinyImageRecyclerView"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/shinyImageRecyclerView" />
@@ -271,11 +289,12 @@
 
                 <TextView
                     android:id="@+id/hp"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
                     android:gravity="start"
                     android:text="@string/hp"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/stats" />
 
@@ -286,20 +305,22 @@
                     android:layout_height="@dimen/detail_progress_height"
                     android:layout_marginStart="@dimen/detail_progress_margin_start"
                     android:max="@{pokemonDetail.MAX_HP}"
-                    android:progressDrawable="@drawable/animated_progress"
                     app:layout_constraintBottom_toBottomOf="@+id/hp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/hp"
                     app:layout_constraintTop_toTopOf="@id/hp"
+                    app:customBackgroundColor="@{@color/progress_background}"
+                    app:customProgressColor="@{@color/hp_progress}"
                     app:progressWithAnimation="@{pokemonDetail.hp}" />
 
                 <TextView
                     android:id="@+id/attack"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
                     android:gravity="start"
                     android:text="@string/attack"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hp" />
 
@@ -310,20 +331,22 @@
                     android:layout_height="@dimen/detail_progress_height"
                     android:layout_marginStart="@dimen/detail_progress_margin_start"
                     android:max="@{pokemonDetail.MAX_ATTACK}"
-                    android:progressDrawable="@drawable/animated_progress"
                     app:layout_constraintBottom_toBottomOf="@+id/attack"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/attack"
                     app:layout_constraintTop_toTopOf="@id/attack"
+                    app:customBackgroundColor="@{@color/progress_background}"
+                    app:customProgressColor="@{@color/attack_progress}"
                     app:progressWithAnimation="@{pokemonDetail.attack}" />
 
                 <TextView
                     android:id="@+id/defense"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
                     android:gravity="start"
                     android:text="@string/defense"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/attack" />
 
@@ -334,20 +357,22 @@
                     android:layout_height="@dimen/detail_progress_height"
                     android:layout_marginStart="@dimen/detail_progress_margin_start"
                     android:max="@{pokemonDetail.MAX_DEFENSE}"
-                    android:progressDrawable="@drawable/animated_progress"
                     app:layout_constraintBottom_toBottomOf="@+id/defense"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/defense"
                     app:layout_constraintTop_toTopOf="@+id/defense"
+                    app:customBackgroundColor="@{@color/progress_background}"
+                    app:customProgressColor="@{@color/defense_progress}"
                     app:progressWithAnimation="@{pokemonDetail.defense}" />
 
                 <TextView
                     android:id="@+id/speed"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
                     android:gravity="start"
                     android:text="@string/speed"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/defense" />
 
@@ -358,20 +383,22 @@
                     android:layout_height="@dimen/detail_progress_height"
                     android:layout_marginStart="@dimen/detail_progress_margin_start"
                     android:max="@{pokemonDetail.MAX_SPEED}"
-                    android:progressDrawable="@drawable/animated_progress"
                     app:layout_constraintBottom_toBottomOf="@+id/speed"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/speed"
                     app:layout_constraintTop_toTopOf="@+id/speed"
+                    app:customBackgroundColor="@{@color/progress_background}"
+                    app:customProgressColor="@{@color/speed_progress}"
                     app:progressWithAnimation="@{pokemonDetail.speed}" />
 
                 <TextView
                     android:id="@+id/exp"
-                    android:layout_width="@dimen/detail_title_width"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_progress_margin_top"
                     android:gravity="start"
                     android:text="@string/experience"
+                    app:layout_constraintEnd_toEndOf="@+id/guideline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/speed" />
 
@@ -382,11 +409,12 @@
                     android:layout_height="@dimen/detail_progress_height"
                     android:layout_marginStart="@dimen/detail_progress_margin_start"
                     android:max="@{pokemonDetail.MAX_EXP}"
-                    android:progressDrawable="@drawable/animated_progress"
                     app:layout_constraintBottom_toBottomOf="@+id/exp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/exp"
                     app:layout_constraintTop_toTopOf="@+id/exp"
+                    app:customBackgroundColor="@{@color/progress_background}"
+                    app:customProgressColor="@{@color/experience_progress}"
                     app:progressWithAnimation="@{pokemonDetail.exp}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
