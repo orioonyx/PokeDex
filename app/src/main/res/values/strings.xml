@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">PokeDex</string>
+    <string name="main_title">PokeDex</string>
+    <string name="pokemon_image">pokemon image</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="information">Information</string>
+    <string name="image">Image</string>
+    <string name="detail_image">Default\nFront / Back</string>
+    <string name="detail_shiny_image">Shiny\nFront / Back</string>
+    <string name="stats">Stats</string>
+    <string name="hp">Hp</string>
+    <string name="attack">Attack</string>
+    <string name="defense">Defense</string>
+    <string name="speed">Speed</string>
+    <string name="experience">Experience</string>
+    <string name="special_attack">Special Attack</string>
+    <string name="special_defense">Special Defense</string>
+    <string name="empty">No items to display</string>
+    <string name="data_missing_message">Pokemon data is missing.</string>
+
+</resources>
