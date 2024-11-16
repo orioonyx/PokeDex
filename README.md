@@ -3,16 +3,15 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Android-blue)
 
-A modern Pokemon Encyclopedia application built with Kotlin, implementing **Clean Architecture** and the **MVVM Design Pattern**.  
-PokeDex leverages the power of **Jetpack components**, **Room**, and **Flow** for a seamless and modularized experience.
+A Pokemon encyclopedia application developed with Kotlin, built on a multi-module structure based on **Clean Architecture** and applying the **MVVM design pattern**. PokeDex leverages **Jetpack components**, **Room**, and **Flow** to provide an intuitive and modularized user experience.
 
 ![](https://github.com/user-attachments/assets/cebb83cd-2ee0-46a1-8672-5ed747c05752)
 
 
 ## Features Overview 🛠️
 
-- **Clean Architecture**
-    - Clear separation of concerns with `app`, `data`, and `domain` modules, ensuring maintainability and scalability.
+- **Multi-Module Based on Clean Architecture**
+    - Structured with `app`, `data`, and `domain` modules, ensuring clear separation of responsibilities while maximizing maintainability and scalability.
 
 - **MVVM Design Pattern**
     - Decouples the View and ViewModel for better organization of UI logic and business rules.
