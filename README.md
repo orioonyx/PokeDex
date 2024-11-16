@@ -53,7 +53,7 @@ PokeDex leverages the power of **Jetpack components**, **Room**, and **Flow** fo
 
 
 ## Architecture ✨
-![](https://github.com/user-attachments/assets/a305ec8e-df74-4060-bfa4-a18b443006f9)
+![](https://github.com/user-attachments/assets/ec88a590-3c2f-46dc-b24d-407e4e8b1f47)
 
 
 ## Preview 🚀
