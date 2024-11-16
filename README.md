@@ -6,7 +6,7 @@
 A modern Pokemon Encyclopedia application built with Kotlin, implementing **Clean Architecture** and the **MVVM Design Pattern**.  
 PokeDex leverages the power of **Jetpack components**, **Room**, and **Flow** for a seamless and modularized experience.
 
-![](https://github.com/user-attachments/assets/7bccaaa7-4d37-42ae-9ae1-7697366af454)
+![](https://github.com/user-attachments/assets/cebb83cd-2ee0-46a1-8672-5ed747c05752)
 
 
 ## Features Overview 🛠️
@@ -53,11 +53,11 @@ PokeDex leverages the power of **Jetpack components**, **Room**, and **Flow** fo
 
 
 ## Architecture ✨
-![](https://github.com/user-attachments/assets/3ee0c157-f432-45ce-adb7-21bebded0f28)
+![](https://github.com/user-attachments/assets/a305ec8e-df74-4060-bfa4-a18b443006f9)
 
 
 ## Preview 🚀
-<img src="https://github.com/user-attachments/assets/17bc6ac5-fc92-4c34-8c12-db9083962a02" style="width: 260px; height: auto;" />
+<img src="https://github.com/user-attachments/assets/1c3d0405-19ca-4535-88a9-7fa684a881ae" style="width: 260px; height: auto;" />
 
 
 ## Open API 🌍
