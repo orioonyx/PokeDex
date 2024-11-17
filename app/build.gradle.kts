@@ -79,6 +79,7 @@ dependencies {
     // modules
     implementation(project(Modules.data))
     implementation(project(Modules.domain))
+    implementation(project(Modules.core))
     testImplementation(project(Modules.core_test))
     androidTestImplementation(project(Modules.core_test))
 
@@ -128,6 +129,7 @@ dependencies {
     // di
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    testImplementation(libs.hilt.testing)
     androidTestImplementation(libs.hilt.testing)
     kspAndroidTest(libs.hilt.compiler)
 

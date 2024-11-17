@@ -8,14 +8,13 @@
 package com.github.orioonyx.pokedex.data.repository
 
 import androidx.annotation.WorkerThread
-import com.github.orioonyx.pokedex.data.di.IoDispatcher
+import com.github.orioonyx.pokedex.core.utils.DispatcherProvider
 import com.github.orioonyx.pokedex.data.local.dao.PokemonDetailDao
 import com.github.orioonyx.pokedex.data.mapper.PokemonMapper
 import com.github.orioonyx.pokedex.data.remote.api.ApiResponseHandler
 import com.github.orioonyx.pokedex.data.remote.api.PokemonApiClient
 import com.github.orioonyx.pokedex.domain.model.PokemonDetail
 import com.github.orioonyx.pokedex.domain.repository.PokemonDetailRepository
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -26,7 +25,7 @@ class PokemonDetailRepositoryImpl @Inject constructor(
     private val apiClient: PokemonApiClient,
     private val pokemonDetailDao: PokemonDetailDao,
     private val apiResponseHandler: ApiResponseHandler,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val dispatcherProvider: DispatcherProvider
 ) : PokemonDetailRepository {
 
     @WorkerThread
@@ -44,7 +43,7 @@ class PokemonDetailRepositoryImpl @Inject constructor(
         }
     }.catch { exception ->
         throw Exception("Exception in flow: ${exception.message}")
-    }.flowOn(ioDispatcher)
+    }.flowOn(dispatcherProvider.io)
 }
 
 

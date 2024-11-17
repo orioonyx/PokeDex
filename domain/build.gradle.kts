@@ -37,6 +37,7 @@ android {
 
 dependencies {
     // modules
+    implementation(project(Modules.core))
     testImplementation(project(Modules.core_test))
 
     implementation(libs.androidx.core.ktx)
