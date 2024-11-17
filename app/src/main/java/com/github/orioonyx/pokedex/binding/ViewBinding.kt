@@ -54,38 +54,50 @@ object ViewBindingAdapters {
 
     @JvmStatic
     @BindingAdapter("paletteImage", "paletteCard")
-    fun bindLoadImagePalette(view: ImageView, imageUrl: String, paletteCard: MaterialCardView) {
-        Glide.with(view.context).load(imageUrl).listener(object : RequestListener<Drawable> {
-            override fun onResourceReady(
-                resource: Drawable,
-                model: Any,
-                target: Target<Drawable>?,
-                dataSource: DataSource,
-                isFirstResource: Boolean
-            ): Boolean {
-                (resource as? BitmapDrawable)?.bitmap?.let { bitmap ->
-                    Palette.from(bitmap).generate { palette ->
-                        val dominantColor = palette?.dominantSwatch?.rgb ?: ContextCompat.getColor(
-                            view.context, R.color.dark
-                        )
-                        paletteCard.setCardBackgroundColor(dominantColor)
-                    }
-                }
-                return false
-            }
+    fun bindLoadImagePalette(view: ImageView, imageUrl: String?, paletteCard: MaterialCardView) {
+        paletteCard.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.gray_10))
 
-            override fun onLoadFailed(
-                e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean
-            ): Boolean {
-                e?.logRootCauses("GlideLoadError")
-                return false
-            }
-        }).into(view)
+        imageUrl?.let {
+            Glide.with(view.context)
+                .load(it)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        e?.logRootCauses("GlideLoadError")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        (resource as? BitmapDrawable)?.bitmap?.let { bitmap ->
+                            Palette.from(bitmap).generate { palette ->
+                                val color = palette?.dominantSwatch?.rgb ?: ContextCompat.getColor(
+                                    view.context, R.color.gray_10
+                                )
+                                paletteCard.setCardBackgroundColor(color)
+                            }
+                        }
+                        return false
+                    }
+                })
+                .into(view)
+        }
     }
 
     @JvmStatic
     @BindingAdapter("paletteImage", "paletteView")
     fun bindLoadImagePaletteView(view: ImageView, url: String?, paletteView: View) {
+        paletteView.setBackgroundColor(ContextCompat.getColor(view.context, R.color.gray_10))
+
         url?.let {
             Glide.with(view.context).load(it).listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -108,7 +120,7 @@ object ViewBindingAdapters {
                     (resource as? BitmapDrawable)?.bitmap?.let { bitmap ->
                         Palette.from(bitmap).generate { palette ->
                             val color = palette?.dominantSwatch?.rgb ?: ContextCompat.getColor(
-                                view.context, R.color.dark
+                                view.context, R.color.gray_10
                             )
                             paletteView.setBackgroundColor(color)
                             setStatusBarColor(view.context as? AppCompatActivity, color)
@@ -145,7 +157,7 @@ object ViewBindingAdapters {
         val context = cardView.context
         val currentColor = (cardView.background as? ColorDrawable)?.color
         val colorResId =
-            typeName?.let { PokemonTypeUtils.getTypeColor(it.lowercase()) } ?: R.color.dark
+            typeName?.let { PokemonTypeUtils.getTypeColor(it.lowercase()) } ?: R.color.gray_10
         val newColor = ContextCompat.getColor(context, colorResId)
 
         if (currentColor != newColor) {

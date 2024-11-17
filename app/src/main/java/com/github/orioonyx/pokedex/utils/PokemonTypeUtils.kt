@@ -32,6 +32,6 @@ object PokemonTypeUtils {
     )
 
     fun getTypeColor(type: String): Int {
-        return typeColorMap[type] ?: R.color.dark
+        return typeColorMap[type] ?: R.color.gray_10
     }
 }
