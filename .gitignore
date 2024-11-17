@@ -27,3 +27,9 @@ proguard/
 
 # Log Files
 *.log
+
+# Proguard rules file
+proguard-rules.pro
+
+# Ignore .gitignore file itself
+.gitignore
