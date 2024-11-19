@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -26,53 +25,57 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties') }}-${{ hashFiles('gradle.lockfile') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties', 'gradle.lockfile') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
       - name: Install Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Set up and start emulator
-        run: |
-          sudo apt-get update
-          sdkmanager --install "system-images;android-31;google_apis;x86_64"
-          echo "no" | avdmanager create avd -n test -k "system-images;android-31;google_apis;x86_64" --force
-          EMULATOR_NAME=test
-          nohup emulator -avd $EMULATOR_NAME -no-snapshot -no-window -no-audio &
-          adb wait-for-device
-          adb shell input keyevent 82
-
       - name: Download dependencies
         run: ./gradlew build -x test
 
-      - name: Run build and tests
-        run: ./gradlew clean build connectedAndroidTest
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
 
-      - name: Upload test results
+  ui-tests:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'run-ui-tests')
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Set up and start emulator
+        run: |
+          sdkmanager --install "system-images;android-31;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n test -k "system-images;android-31;google_apis;x86_64" --force
+          nohup emulator -avd test -no-snapshot -no-window -no-audio &
+          adb shell input keyevent 82
+
+      - name: Run UI tests
+        run: ./gradlew connectedAndroidTest
+
+      - name: Upload UI test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-results
+          name: ui-test-results
           path: |
             **/build/test-results/**/*.xml
             **/build/reports/**
 
       - name: Annotate test results
         uses: dorny/test-reporter@v1
-        if: always()
         with:
           name: Unit Tests
-          path: '**/build/test-results/testDebugUnitTest/*.xml'
+          path: '**/build/test-results/testDebugUnitTest/**/*.xml'
           reporter: junit
-
-      - name: Add build failure comment
-        uses: actions/github-script@v6
-        if: failure()
-        with:
-          script: |
-            github.issues.createComment({
-              issue_number: ${{ github.event.pull_request.number }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'The build has failed. Please check the workflow log for details.'
-            })
