@@ -118,6 +118,7 @@ dependencies {
     implementation(libs.coroutines)
     testImplementation(libs.coroutines)
     testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.coroutines.test)
 
     // network
     implementation(libs.sandwich.retrofit)
