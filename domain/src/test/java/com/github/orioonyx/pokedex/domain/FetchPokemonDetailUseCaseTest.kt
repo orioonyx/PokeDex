@@ -26,7 +26,6 @@ import org.junit.Before
 import org.junit.Test
 import timber.log.Timber
 
-
 class FetchPokemonDetailUseCaseTest {
 
     private val repository: PokemonDetailRepository = mockk()

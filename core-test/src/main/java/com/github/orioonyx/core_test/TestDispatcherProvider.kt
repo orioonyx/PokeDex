@@ -4,13 +4,14 @@
  *
  * Author: KyungEun Noh
  */
+
 package com.github.orioonyx.core_test
 
+import com.github.orioonyx.pokedex.core.utils.DispatcherProvider
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestDispatcher
 
-object TestDispatcherProvider {
-    val main: TestDispatcher = StandardTestDispatcher()
-    val io: TestDispatcher = StandardTestDispatcher()
-    val default: TestDispatcher = StandardTestDispatcher()
-}
+object TestDispatcherProvider : DispatcherProvider(
+    main = StandardTestDispatcher(),
+    io = StandardTestDispatcher(),
+    default = StandardTestDispatcher()
+)
