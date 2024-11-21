@@ -35,29 +35,33 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailBinding.inflate(layoutInflater)
+        binding = ActivityDetailBinding.inflate(layoutInflater).apply {
+            lifecycleOwner = this@DetailActivity
+            vm = viewModel
+        }
         setContentView(binding.root)
 
-        binding.lifecycleOwner = this
-        binding.vm = viewModel
-
-        setupRecyclerViews()
+        setupUI()
         observeViewModel()
 
-        getPokemonFromIntent()?.let {
-            binding.pokemon = it
-            viewModel.fetchPokemonDetail(it.name)
-            updatePokemonImages(it)
+        getPokemonFromIntent()?.let { pokemon ->
+            binding.pokemon = pokemon
+            viewModel.fetchPokemonDetail(pokemon.name)
+            updatePokemonImages(pokemon)
         } ?: viewModel.setToastMessage(getString(R.string.data_missing_message))
     }
 
-    private fun getPokemonFromIntent(): Pokemon? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun setupUI() {
+        setupRecyclerViews()
+    }
+
+    private fun getPokemonFromIntent(): Pokemon? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_POKEMON, Pokemon::class.java)
         } else {
+            @Suppress("DEPRECATION")
             intent.getParcelableExtra(EXTRA_POKEMON)
         }
-    }
 
     private fun setupRecyclerViews() {
         setupRecyclerView(binding.imageRecyclerView, pokemonImageAdapter, GridLayoutManager(this, 2))
@@ -66,7 +70,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>, layoutManager: RecyclerView.LayoutManager) {
-        recyclerView.apply {
+        recyclerView.run {
             this.adapter = adapter
             this.layoutManager = layoutManager
         }

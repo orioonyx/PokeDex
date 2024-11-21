@@ -44,42 +44,29 @@ class DetailViewModel @Inject constructor(
         Timber.d("DetailViewModel initialized")
     }
 
-    fun fetchPokemonDetail(name: String) {
-        viewModelScope.launch {
-            EspressoIdlingResource.increment()
-            try {
-                fetchPokemonDetailUseCase(name)
-                    .onStart { onFetchStart() }
-                    .catch { onFetchError(it) }
-                    .collect { detail -> onFetchSuccess(detail) }
-            } finally {
-                onFetchComplete()
-                EspressoIdlingResource.decrement()
-            }
-        }
+    fun fetchPokemonDetail(name: String) = viewModelScope.launch {
+        EspressoIdlingResource.increment()
+        fetchPokemonDetailUseCase(name)
+            .onStart { updateLoadingState(true) }
+            .catch { handleFetchError(it) }
+            .collect { updatePokemonDetail(it) }
+        updateLoadingState(false)
+        EspressoIdlingResource.decrement()
     }
 
-    private fun onFetchStart() {
-        _isLoading.value = true
-        _isFetchFailed.value = false
+    private fun updateLoadingState(isLoading: Boolean) {
+        _isLoading.value = isLoading
+        _isFetchFailed.value = !isLoading && _pokemonDetail.value?.name.isNullOrEmpty()
     }
 
-    private fun onFetchError(exception: Throwable) {
+    private fun handleFetchError(exception: Throwable) {
         Timber.e(exception, ERROR_LOADING_POKEMON_DETAILS)
         _toastMessage.value = Event(ERROR_LOADING_POKEMON_DETAILS)
         _isFetchFailed.value = true
     }
 
-    private fun onFetchSuccess(detail: PokemonDetail?) {
+    private fun updatePokemonDetail(detail: PokemonDetail?) {
         _pokemonDetail.value = detail
-    }
-
-    private fun onFetchComplete() {
-        _isLoading.value = false
-        if (_pokemonDetail.value?.name.isNullOrEmpty()) {
-            _isFetchFailed.value = true
-            _toastMessage.value = Event(ERROR_LOADING_POKEMON_DETAILS)
-        }
     }
 
     fun setToastMessage(message: String) {
