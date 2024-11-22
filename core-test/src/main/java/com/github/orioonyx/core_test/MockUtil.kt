@@ -16,7 +16,7 @@ import com.github.orioonyx.pokedex.domain.model.PokemonDetail
 object MockUtil {
 
     fun mockPokemon(
-        name: String = "bulbasaur",
+        name: String = "ditto",
         url: String = "https://pokeapi.co/api/v2/pokemon/1/",
         page: Int = 1
     ): Pokemon = Pokemon(
@@ -25,27 +25,38 @@ object MockUtil {
         url = url
     )
 
-    fun generatePokemonList(count: Int, startIndex: Int = 1): List<Pokemon> =
+    fun generatePokemonList(
+        count: Int,
+        startIndex: Int = 1,
+        overrideFirst: (Pokemon.() -> Pokemon)? = null
+    ): List<Pokemon> =
         List(count) { index ->
             val actualIndex = startIndex + index
-            mockPokemon(
+            val defaultPokemon = mockPokemon(
                 name = "pokemon_$actualIndex",
                 url = "https://pokeapi.co/api/v2/pokemon/$actualIndex/",
                 page = (actualIndex - 1) / 20 + 1
             )
+            if (index == 0 && overrideFirst != null) {
+                overrideFirst(defaultPokemon)
+            } else {
+                defaultPokemon
+            }
         }
 
-    fun mockPokemonDetail(): PokemonDetail = PokemonDetail(
-        id = 132,
-        name = "ditto",
+    fun mockPokemonDetail(
+        name: String = "ditto",
+        types: List<PokemonDetail.PokemonType> = listOf(
+            PokemonDetail.PokemonType(slot = 1, type = PokemonDetail.TypeInfo(name = "normal")),
+            PokemonDetail.PokemonType(slot = 2, type = PokemonDetail.TypeInfo(name = "psychic"))
+        )
+    ): PokemonDetail = PokemonDetail(
+        id = 1,
+        name = name,
         height = 3,
         weight = 40,
         experience = 101,
-        types = listOf(
-            PokemonDetail.PokemonType(slot = 1, type = PokemonDetail.TypeInfo(name = "normal")),
-            PokemonDetail.PokemonType(slot = 2, type = PokemonDetail.TypeInfo(name = "psychic")),
-            PokemonDetail.PokemonType(slot = 3, type = PokemonDetail.TypeInfo(name = "ghost"))
-        ),
+        types = types,
         hp = 48,
         attack = 55,
         defense = 50,

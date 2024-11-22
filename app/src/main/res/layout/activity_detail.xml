@@ -25,7 +25,7 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+        android:id="@+id/pokemonDetailContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -68,7 +68,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/arrow"
                         app:paletteImage="@{pokemon.imageUrl}"
-                        app:paletteView="@{coordinatorLayout}"
+                        app:paletteView="@{pokemonDetailContainer}"
                         app:translationYRange="6.0" />
 
                     <TextView

@@ -21,40 +21,36 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     lateinit var binding: ActivityMainBinding
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val viewModel: MainViewModel by viewModels()
+
+    private val adapter by lazy { PokemonAdapter { pokemon -> onPokemonClick(pokemon) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater).apply {
+            lifecycleOwner = this@MainActivity
+            vm = viewModel
+            this.adapter = this@MainActivity.adapter
+        }
         setContentView(binding.root)
 
-        binding.lifecycleOwner = this
-        binding.vm = viewModel
-
-        setupPokemonListObserver()
-        setupAdapter()
+        observeViewModel()
         viewModel.fetchNextPokemonList()
     }
 
-    private fun setupPokemonListObserver() {
+    private fun observeViewModel() {
         viewModel.pokemonList.observe(this) { pokemonList ->
-            (binding.adapter as? PokemonAdapter)?.submitList(pokemonList)
+            adapter.submitList(pokemonList)
         }
-    }
-
-    private fun setupAdapter() {
-        val adapter = PokemonAdapter { pokemon -> onPokemonClick(pokemon) }
-        binding.adapter = adapter
     }
 
     private fun onPokemonClick(pokemon: Pokemon) {
-        val intent = Intent(this, DetailActivity::class.java).apply {
+        Intent(this, DetailActivity::class.java).apply {
             putExtra(EXTRA_POKEMON, pokemon)
-        }
-        startActivity(intent)
+        }.also { startActivity(it) }
     }
 }

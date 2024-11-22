@@ -24,8 +24,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import timber.log.Timber
-
 
 class FetchPokemonDetailUseCaseTest {
 
@@ -64,7 +62,6 @@ class FetchPokemonDetailUseCaseTest {
         // Then
         result.catch { e ->
             assertTrue(e is Exception && e.message == errorMessage)
-            Timber.e(e)
         }.collect()
     }
 }

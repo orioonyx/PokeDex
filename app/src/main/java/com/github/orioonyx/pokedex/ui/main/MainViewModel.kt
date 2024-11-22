@@ -52,38 +52,28 @@ class MainViewModel @Inject constructor(
         fetchPokemonList(currentPageIndex)
     }
 
-    private fun fetchPokemonList(page: Int) {
-        viewModelScope.launch {
-            EspressoIdlingResource.increment()
-            fetchPokemonListUseCase(page)
-                .onStart { handleLoadingStart() }
-                .catch { handleError(it) }
-                .collect { handleSuccess(it) }
-            handleLoadingComplete()
-            EspressoIdlingResource.decrement()
-        }
+    private fun fetchPokemonList(page: Int) = viewModelScope.launch {
+        EspressoIdlingResource.increment()
+        fetchPokemonListUseCase(page)
+            .onStart { updateLoadingState(true) }
+            .catch { handleFetchError(it) }
+            .collect { updatePokemonList(it) }
+        updateLoadingState(false)
+        EspressoIdlingResource.decrement()
     }
 
-    private fun handleLoadingStart() {
-        _isLoading.value = true
-        _isFetchFailed.value = false
+    private fun updateLoadingState(isLoading: Boolean) {
+        _isLoading.value = isLoading
+        _isFetchFailed.value = !isLoading && _pokemonList.value.isNullOrEmpty()
     }
 
-    private fun handleError(exception: Throwable) {
+    private fun handleFetchError(exception: Throwable) {
         Timber.e(exception, ERROR_LOADING_POKEMON_LIST)
         _toastMessage.value = Event(ERROR_LOADING_POKEMON_LIST)
         _isFetchFailed.value = true
     }
 
-    private fun handleSuccess(list: List<Pokemon>) {
-        _pokemonList.value = _pokemonList.value.orEmpty().plus(list)
-    }
-
-    private fun handleLoadingComplete() {
-        _isLoading.value = false
-        if (_pokemonList.value.isNullOrEmpty()) {
-            _isFetchFailed.value = true
-            _toastMessage.value = Event(ERROR_LOADING_POKEMON_LIST)
-        }
+    private fun updatePokemonList(newList: List<Pokemon>) {
+        _pokemonList.value = _pokemonList.value.orEmpty() + newList
     }
 }

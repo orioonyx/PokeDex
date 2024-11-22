@@ -37,6 +37,7 @@ android {
 
 dependencies {
     // modules
+    implementation(project(Modules.core))
     testImplementation(project(Modules.core_test))
 
     implementation(libs.androidx.core.ktx)
@@ -64,8 +65,6 @@ dependencies {
     // di
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    androidTestImplementation(libs.hilt.testing)
-    kspAndroidTest(libs.hilt.compiler)
 
     // logger
     api(libs.timber)

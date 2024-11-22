@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.orioonyx.core_test"
+    namespace = "com.github.orioonyx.pokedex.core"
     compileSdk = 34
 
     defaultConfig {
@@ -27,28 +27,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-    // modules
-    implementation(project(Modules.core))
-    implementation(project(Modules.domain))
-
-    // logger
-    api(libs.timber)
-
-    // test
-    implementation(libs.junit)
-    implementation(libs.coroutines.test)
-
     // di
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.testing)
 }
