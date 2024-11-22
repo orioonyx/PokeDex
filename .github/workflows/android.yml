@@ -35,8 +35,8 @@ jobs:
       - name: Download dependencies
         run: ./gradlew build -x test
 
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
+      - name: Run Unit Tests
+        run: ./gradlew :app:testDebugUnitTest :domain:testDebugUnitTest
 
   ui-tests:
     runs-on: ubuntu-latest
@@ -70,12 +70,13 @@ jobs:
         with:
           name: ui-test-results
           path: |
-            **/build/test-results/**/*.xml
-            **/build/reports/**
+            app/build/outputs/androidTest-results/connected/**/*.xml
 
       - name: Annotate test results
         uses: dorny/test-reporter@v1
         with:
           name: Unit Tests
-          path: '**/build/test-results/testDebugUnitTest/**/*.xml'
-          reporter: junit
+          path: |
+            app/build/test-results/testDebugUnitTest/**/*.xml
+            domain/build/test-results/testDebugUnitTest/**/*.xml
+          reporter: java-junit
