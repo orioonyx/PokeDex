@@ -10,87 +10,92 @@
 package com.github.orioonyx.pokedex
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.github.orioonyx.core_test.MockUtil
 import com.github.orioonyx.core_test.TestDispatcherProvider
-import com.github.orioonyx.pokedex.domain.model.PokemonDetail
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonDetailUseCase
 import com.github.orioonyx.pokedex.ui.detail.DetailViewModel
 import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_DETAILS
-import com.github.orioonyx.pokedex.utils.Event
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-@HiltAndroidTest
 class DetailViewModelTest {
 
     @get:Rule
-    val hiltRule = HiltAndroidRule(this)
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val fetchPokemonDetailUseCase: FetchPokemonDetailUseCase = mockk()
-
-    @Inject
-    lateinit var testDispatcherProvider: TestDispatcherProvider
-
     private lateinit var viewModel: DetailViewModel
 
+    private val testDispatcher = TestDispatcherProvider.main
+
     @Before
-    fun setup() {
-        hiltRule.inject()
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
         viewModel = DetailViewModel(fetchPokemonDetailUseCase)
     }
 
-    @Test
-    fun `fetchPokemonDetail should fetch and update pokemon detail`() = runTest(testDispatcherProvider.main) {
-        // Given
-        val pokemonDetail = MockUtil.mockPokemonDetail()
-        coEvery { fetchPokemonDetailUseCase.invoke(any()) } returns flow { emit(pokemonDetail) }
-
-        val observer: Observer<PokemonDetail?> = mockk(relaxed = true)
-        viewModel.pokemonDetail.observeForever(observer)
-
-        // When
-        viewModel.fetchPokemonDetail("bulbasaur")
-
-        // Then
-        coVerify { observer.onChanged(pokemonDetail) }
-        assertEquals(pokemonDetail, viewModel.pokemonDetail.value)
-
-        viewModel.pokemonDetail.removeObserver(observer)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `fetchPokemonDetail should show toast on error`() = runTest(testDispatcherProvider.main) {
+    fun `fetchPokemonDetail updates pokemonDetail on success`() = runTest(testDispatcher) {
         // Given
-        val errorMessage = ERROR_LOADING_POKEMON_DETAILS
-        coEvery { fetchPokemonDetailUseCase.invoke(any()) } returns flow { throw Exception(errorMessage) }
-
-        val toastObserver: Observer<Event<String>> = mockk(relaxed = true)
-        viewModel.toastMessage.observeForever(toastObserver)
+        val mockDetail = MockUtil.mockPokemonDetail()
+        coEvery { fetchPokemonDetailUseCase("ditto") } returns flow { emit(mockDetail) }
 
         // When
-        viewModel.fetchPokemonDetail("bulbasaur")
+        viewModel.fetchPokemonDetail("ditto")
+        advanceUntilIdle()
 
         // Then
-        coVerify {
-            toastObserver.onChanged(match { it.peekContent() == errorMessage })
-        }
+        assertEquals(mockDetail, viewModel.pokemonDetail.value)
+        assertEquals(false, viewModel.isLoading.value)
+        assertEquals(false, viewModel.isFetchFailed.value)
+    }
 
-        viewModel.toastMessage.removeObserver(toastObserver)
+    @Test
+    fun `fetchPokemonDetail shows toast on error`() = runTest(testDispatcher) {
+        // Given
+        coEvery { fetchPokemonDetailUseCase("ditto") } returns flow { throw RuntimeException("Error") }
+
+        // When
+        viewModel.fetchPokemonDetail("ditto")
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(ERROR_LOADING_POKEMON_DETAILS, viewModel.toastMessage.value?.peekContent())
+        assertEquals(true, viewModel.isFetchFailed.value)
+        assertEquals(false, viewModel.isLoading.value)
+    }
+
+    @Test
+    fun `fetchPokemonDetail handles empty detail`() = runTest(testDispatcher) {
+        // Given
+        val emptyDetail = MockUtil.emptyPokemonDetail()
+        coEvery { fetchPokemonDetailUseCase("unknown") } returns flow { emit(emptyDetail) }
+
+        // When
+        viewModel.fetchPokemonDetail("unknown")
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(emptyDetail, viewModel.pokemonDetail.value)
+        assertEquals(false, viewModel.isLoading.value)
+        assertEquals(true, viewModel.isFetchFailed.value)
     }
 }

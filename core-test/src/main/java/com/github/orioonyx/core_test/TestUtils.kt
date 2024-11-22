@@ -19,7 +19,7 @@ object TestUtils {
 
     inline fun <reified T : androidx.activity.ComponentActivity> setupScenario(
         intentConfig: Intent.() -> Unit = {},
-        lifecycleState: Lifecycle.State = Lifecycle.State.CREATED
+        lifecycleState: Lifecycle.State = Lifecycle.State.RESUMED
     ): ActivityScenario<T> {
         val intent = Intent(ApplicationProvider.getApplicationContext(), T::class.java).apply(intentConfig)
         return ActivityScenario.launch<T>(intent).apply {
