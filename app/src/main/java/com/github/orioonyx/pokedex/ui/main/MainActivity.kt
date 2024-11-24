@@ -12,11 +12,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.github.orioonyx.pokedex.databinding.ActivityMainBinding
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import com.github.orioonyx.pokedex.ui.detail.DetailActivity
 import com.github.orioonyx.pokedex.ui.detail.DetailActivity.Companion.EXTRA_POKEMON
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -43,8 +46,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.pokemonList.observe(this) { pokemonList ->
-            adapter.submitList(pokemonList)
+        lifecycleScope.launch {
+            viewModel.pokemonList.collectLatest { pokemonList ->
+                adapter.submitList(pokemonList)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.toastMessage.collectLatest { event ->
+                event?.getContentIfNotHandled()?.let { message ->
+                    showToast(message)
+                }
+            }
         }
     }
 
@@ -52,5 +65,9 @@ class MainActivity : AppCompatActivity() {
         Intent(this, DetailActivity::class.java).apply {
             putExtra(EXTRA_POKEMON, pokemon)
         }.also { startActivity(it) }
+    }
+
+    private fun showToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }

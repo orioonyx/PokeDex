@@ -12,6 +12,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,8 @@ import com.github.orioonyx.pokedex.R
 import com.github.orioonyx.pokedex.databinding.ActivityDetailBinding
 import com.github.orioonyx.pokedex.domain.model.Pokemon
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -82,10 +85,24 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.pokemonDetail.observe(this) { pokemonDetail ->
-            binding.pokemonDetail = pokemonDetail
-            pokemonDetail?.types?.map { it.type }?.let(pokemonTypeAdapter::setItems)
+        lifecycleScope.launch {
+            viewModel.pokemonDetail.collectLatest { pokemonDetail ->
+                binding.pokemonDetail = pokemonDetail
+                pokemonDetail?.types?.map { it.type }?.let(pokemonTypeAdapter::setItems)
+            }
         }
+
+        lifecycleScope.launch {
+            viewModel.toastMessage.collectLatest { event ->
+                event?.getContentIfNotHandled()?.let { message ->
+                    showToast(message)
+                }
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
     companion object {

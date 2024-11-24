@@ -52,5 +52,21 @@ data class PokemonDetail(
 
         const val WEIGHT_FORMAT = "%.1f KG"
         const val HEIGHT_FORMAT = "%.1f M"
+
+        fun default(): PokemonDetail {
+            return PokemonDetail(
+                id = 0,
+                name = "",
+                height = 0,
+                weight = 0,
+                experience = 0,
+                types = emptyList(),
+                hp = 0,
+                attack = 0,
+                defense = 0,
+                speed = 0,
+                exp = 0
+            )
+        }
     }
 }

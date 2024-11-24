@@ -9,7 +9,7 @@
 
 package com.github.orioonyx.pokedex
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
 import com.github.orioonyx.core_test.MockUtil
 import com.github.orioonyx.core_test.TestDispatcherProvider
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonDetailUseCase
@@ -25,20 +25,15 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class DetailViewModelTest {
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
-
     private val fetchPokemonDetailUseCase: FetchPokemonDetailUseCase = mockk()
     private lateinit var viewModel: DetailViewModel
-
     private val testDispatcher = TestDispatcherProvider.main
 
     @Before
@@ -60,12 +55,21 @@ class DetailViewModelTest {
 
         // When
         viewModel.fetchPokemonDetail("ditto")
-        advanceUntilIdle()
 
         // Then
-        assertEquals(mockDetail, viewModel.pokemonDetail.value)
-        assertEquals(false, viewModel.isLoading.value)
-        assertEquals(false, viewModel.isFetchFailed.value)
+        viewModel.pokemonDetail.test {
+            assertEquals(MockUtil.emptyPokemonDetail(), awaitItem())
+            assertEquals(mockDetail, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isFetchFailed.test {
+            assertEquals(false, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -75,12 +79,21 @@ class DetailViewModelTest {
 
         // When
         viewModel.fetchPokemonDetail("ditto")
-        advanceUntilIdle()
 
         // Then
-        assertEquals(ERROR_LOADING_POKEMON_DETAILS, viewModel.toastMessage.value?.peekContent())
-        assertEquals(true, viewModel.isFetchFailed.value)
-        assertEquals(false, viewModel.isLoading.value)
+        viewModel.toastMessage.test {
+            assertEquals(null, awaitItem())
+            assertEquals(ERROR_LOADING_POKEMON_DETAILS, awaitItem()?.peekContent())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isFetchFailed.test {
+            assertEquals(true, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -94,8 +107,17 @@ class DetailViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertEquals(emptyDetail, viewModel.pokemonDetail.value)
-        assertEquals(false, viewModel.isLoading.value)
-        assertEquals(true, viewModel.isFetchFailed.value)
+        viewModel.pokemonDetail.test {
+            assertEquals(emptyDetail, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isFetchFailed.test {
+            assertEquals(true, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }
