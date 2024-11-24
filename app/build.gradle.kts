@@ -113,6 +113,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotest)
     testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlin.test)
 
     // coroutines
     implementation(libs.coroutines)
