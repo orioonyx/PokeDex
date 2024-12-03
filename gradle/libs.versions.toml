@@ -31,7 +31,7 @@ kotest = "5.5.4"
 truth = "1.4.4"
 hamcrest = "2.2"
 awaitility = "4.2.0"
-navigation = "2.7.3"
+turbine = "0.12.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -77,8 +77,8 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 hamcrest-library = { module = "org.hamcrest:hamcrest-library", version.ref = "hamcrest" }
 awaitility = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitility" }
-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

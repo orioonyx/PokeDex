@@ -7,8 +7,6 @@
 
 package com.github.orioonyx.pokedex.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.orioonyx.pokedex.domain.model.Pokemon
@@ -17,6 +15,9 @@ import com.github.orioonyx.pokedex.utils.ERROR_LOADING_POKEMON_LIST
 import com.github.orioonyx.pokedex.utils.EspressoIdlingResource
 import com.github.orioonyx.pokedex.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -28,17 +29,17 @@ class MainViewModel @Inject constructor(
     private val fetchPokemonListUseCase: FetchPokemonListUseCase
 ) : ViewModel() {
 
-    private val _pokemonList = MutableLiveData<List<Pokemon>>(emptyList())
-    val pokemonList: LiveData<List<Pokemon>> get() = _pokemonList
+    private val _pokemonList = MutableStateFlow<List<Pokemon>>(emptyList())
+    val pokemonList: StateFlow<List<Pokemon>> = _pokemonList
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _toastMessage = MutableLiveData<Event<String>>()
-    val toastMessage: LiveData<Event<String>> get() = _toastMessage
+    private val _toastMessage = MutableStateFlow<Event<String>?>(null)
+    val toastMessage: StateFlow<Event<String>?> = _toastMessage
 
-    private val _isFetchFailed = MutableLiveData(false)
-    val isFetchFailed: LiveData<Boolean> get() = _isFetchFailed
+    private val _isFetchFailed = MutableStateFlow(false)
+    val isFetchFailed: StateFlow<Boolean> = _isFetchFailed
 
     private var currentPageIndex = 0
 
@@ -47,24 +48,25 @@ class MainViewModel @Inject constructor(
     }
 
     fun fetchNextPokemonList() {
-        if (_isLoading.value == true) return
+        if (_isLoading.value) return
         currentPageIndex++
         fetchPokemonList(currentPageIndex)
     }
 
     private fun fetchPokemonList(page: Int) = viewModelScope.launch {
-        EspressoIdlingResource.increment()
-        fetchPokemonListUseCase(page)
-            .onStart { updateLoadingState(true) }
-            .catch { handleFetchError(it) }
-            .collect { updatePokemonList(it) }
-        updateLoadingState(false)
-        EspressoIdlingResource.decrement()
+        withIdlingResource {
+            fetchPokemonListUseCase(page)
+                .handleFetchResult()
+        }
     }
 
     private fun updateLoadingState(isLoading: Boolean) {
         _isLoading.value = isLoading
-        _isFetchFailed.value = !isLoading && _pokemonList.value.isNullOrEmpty()
+        _isFetchFailed.value = !isLoading && _pokemonList.value.isEmpty()
+    }
+
+    private fun updatePokemonList(newList: List<Pokemon>) {
+        _pokemonList.value += newList
     }
 
     private fun handleFetchError(exception: Throwable) {
@@ -73,7 +75,19 @@ class MainViewModel @Inject constructor(
         _isFetchFailed.value = true
     }
 
-    private fun updatePokemonList(newList: List<Pokemon>) {
-        _pokemonList.value = _pokemonList.value.orEmpty() + newList
+    private suspend fun Flow<List<Pokemon>>.handleFetchResult() {
+        this.onStart { updateLoadingState(true) }
+            .catch { handleFetchError(it) }
+            .collect { updatePokemonList(it) }
+        updateLoadingState(false)
+    }
+
+    private inline fun withIdlingResource(block: () -> Unit) {
+        EspressoIdlingResource.increment()
+        try {
+            block()
+        } finally {
+            EspressoIdlingResource.decrement()
+        }
     }
 }

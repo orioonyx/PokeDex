@@ -9,7 +9,7 @@
 
 package com.github.orioonyx.pokedex
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
 import com.github.orioonyx.core_test.MockUtil
 import com.github.orioonyx.core_test.TestDispatcherProvider
 import com.github.orioonyx.pokedex.domain.usecase.FetchPokemonListUseCase
@@ -20,23 +20,20 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class MainViewModelTest {
 
     @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = androidx.arch.core.executor.testing.InstantTaskExecutorRule()
 
     private val fetchPokemonListUseCase: FetchPokemonListUseCase = mockk()
     private lateinit var viewModel: MainViewModel
@@ -61,12 +58,19 @@ class MainViewModelTest {
 
         // When
         viewModel.fetchNextPokemonList()
-        advanceUntilIdle()
 
         // Then
-        assertEquals(mockPokemonList, viewModel.pokemonList.value)
-        assertFalse(viewModel.isLoading.value ?: true)
-        assertFalse(viewModel.isFetchFailed.value ?: true)
+        viewModel.pokemonList.test {
+            assertEquals(emptyList(), awaitItem())
+            assertEquals(mockPokemonList, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+        }
+        viewModel.isFetchFailed.test {
+            assertEquals(false, awaitItem())
+        }
     }
 
     @Test
@@ -76,13 +80,19 @@ class MainViewModelTest {
 
         // When
         viewModel.fetchNextPokemonList()
-        advanceUntilIdle()
 
         // Then
-        val actualToastMessage = viewModel.toastMessage.value?.peekContent()
-        assertEquals(ERROR_LOADING_POKEMON_LIST, actualToastMessage)
-        assertFalse(viewModel.isLoading.value ?: true)
-        assertTrue(viewModel.isFetchFailed.value ?: false)
+        viewModel.toastMessage.test {
+            assertEquals(null, awaitItem())
+            assertEquals(ERROR_LOADING_POKEMON_LIST, awaitItem()?.peekContent())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+        }
+        viewModel.isFetchFailed.test {
+            assertEquals(true, awaitItem())
+        }
     }
 
     @Test
@@ -92,12 +102,17 @@ class MainViewModelTest {
         coEvery { fetchPokemonListUseCase(any()) } returns flow { emit(mockPokemonList) }
 
         // When
-        viewModel.fetchNextPokemonList() // First fetch
-        advanceUntilIdle()
-        viewModel.fetchNextPokemonList() // Attempt second fetch during loading
+        viewModel.fetchNextPokemonList()
+        viewModel.fetchNextPokemonList()
 
         // Then
-        assertEquals(mockPokemonList, viewModel.pokemonList.value)
-        assertFalse(viewModel.isLoading.value ?: true)
+        viewModel.pokemonList.test {
+            assertEquals(emptyList(), awaitItem())
+            assertEquals(mockPokemonList, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+        viewModel.isLoading.test {
+            assertEquals(false, awaitItem())
+        }
     }
 }
